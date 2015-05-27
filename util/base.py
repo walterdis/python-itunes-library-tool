@@ -7,4 +7,3 @@ def get_file(path, file_name = ''):
         return path + file_name
     else:
         return False
-

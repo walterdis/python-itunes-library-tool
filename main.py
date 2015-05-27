@@ -3,32 +3,37 @@
 
 __author__ = 'Walter Discher Cechinel'
 
-import util.base, os, getpass
-from itunes import Itunes
+import os
+from itunes.reader import Reader
+from itunes.itunes import Itunes, ItunesLibraryException
 from menu import Menu
 from command import Command
 
 os.system('cls')
 
-file_path = r'C:\Users\{!s}\Music\iTunes/'.format( getpass.getuser() )
-file_name = 'iTunes Music Library.xl'
+reader = Reader()
+library = reader.load()
 
-location = file_name+file_name
-xml_file = util.base.get_file(file_path, file_name)
 
-while(not xml_file):
+while(not library):
     print(r"""
     Can't find the file %s
     ------------------------------------------------------------
-    Please provide de Itunes library file location with full path
+    Please provide the Itunes library file location with full path
         - Example: C:\Users\your_username\My Music\iTunes\iTunes Music Library.xml
 
-    """ % location)
+    """ % reader.location)
 
-    location = input('File location: ')
-    xml_file = util.base.get_file(location)
+    library_location = input('File location: ')
+    library = reader.load(library_location)
+try:
+    itunes = Itunes(library)
+    menu = Menu(reader.location, Command(itunes), itunes)
 
-itunes = Itunes(xml_file)
-menu = Menu(xml_file, Command(itunes), itunes)
+    os.system('cls')
+    menu.main()
+except ItunesLibraryException as e:
+    print(e)
 
-menu.main()
+
+

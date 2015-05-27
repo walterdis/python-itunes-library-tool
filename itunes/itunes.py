@@ -7,10 +7,12 @@ from inspect import getmembers
 
 class Itunes:
 
-    def __init__(self, xml_file):
-        with open(xml_file, 'rb') as library:
-            self.library = plistlib.load(library)
-            self.tracks_sorted = self.get_tracks_keys_sorted()
+    def __init__(self, library):
+        if not library:
+            raise ItunesLibraryException('The library is missing or invalid')
+
+        self.library = library
+        self.tracks_sorted = self.get_tracks_keys_sorted()
 
     """ Returns <string> """
     def parse_music_location(self, music_location):
@@ -55,3 +57,9 @@ class Itunes:
             raise FileNotFoundError('Could not find de given file ', file_location)
 
         os.remove(file_location)
+
+class ItunesLibraryException(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
