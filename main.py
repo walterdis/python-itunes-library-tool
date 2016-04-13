@@ -4,12 +4,16 @@
 __author__ = 'Walter Discher Cechinel'
 
 import os
+import platform
 from itunes.reader import Reader
 from itunes.itunes import Itunes, ItunesLibraryException
 from menu import Menu
 from command import Command
 
-os.system('cls')
+if hasattr(platform, 'linux_distribution'):
+    os.system('clear')
+else:
+    os.system('cls')
 
 reader = Reader()
 library = reader.load()
@@ -30,7 +34,7 @@ try:
     itunes = Itunes(library)
     menu = Menu(reader.location, Command(itunes), itunes)
 
-    os.system('cls')
+    os.system('clear')
     menu.main()
 except ItunesLibraryException as e:
     print(e)
